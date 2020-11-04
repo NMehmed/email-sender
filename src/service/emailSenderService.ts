@@ -5,14 +5,14 @@ const from = process.env.MAIL_FROM
 const mg = mailgun({ apiKey, domain })
 
 const send = (to: string, subject: string, text: string, cb: Function) => {
-  const data = {
+  const mail = {
     from,
     to,
     subject,
     text
   }
 
-  mg.messages().send(data, cb)
+  mg.messages().send(mail, cb)
 }
 
 export default { send }

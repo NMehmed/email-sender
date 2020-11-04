@@ -43,10 +43,11 @@ exports.start = void 0;
 var amqplib_1 = __importDefault(require("amqplib"));
 var emailSenderService_1 = __importDefault(require("./emailSenderService"));
 var start = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var MESSAGE_QUEUE, QUEUE_NAME, connection, channel;
+    var MESSAGE_QUEUE, QUEUE_NAME, connection, channel_1, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
+                _a.trys.push([0, 5, , 6]);
                 if (!process.env.MESSAGE_QUEUE)
                     throw Error('"MESSAGE_QUEUE" environment variable is not set');
                 if (!process.env.QUEUE_NAME)
@@ -58,14 +59,14 @@ var start = function () { return __awaiter(void 0, void 0, void 0, function () {
                 connection = _a.sent();
                 return [4 /*yield*/, connection.createChannel()];
             case 2:
-                channel = _a.sent();
-                return [4 /*yield*/, channel.assertQueue(QUEUE_NAME, { durable: true })];
+                channel_1 = _a.sent();
+                return [4 /*yield*/, channel_1.assertQueue(QUEUE_NAME, { durable: true })];
             case 3:
                 _a.sent();
-                return [4 /*yield*/, channel.prefetch(1)];
+                return [4 /*yield*/, channel_1.prefetch(1)];
             case 4:
                 _a.sent();
-                channel.consume(QUEUE_NAME, function (msg) { return __awaiter(void 0, void 0, void 0, function () {
+                channel_1.consume(QUEUE_NAME, function (msg) { return __awaiter(void 0, void 0, void 0, function () {
                     var content, task;
                     return __generator(this, function (_a) {
                         if (msg) {
@@ -74,11 +75,11 @@ var start = function () { return __awaiter(void 0, void 0, void 0, function () {
                             if (task) {
                                 emailSenderService_1.default.send(task.emailTo, task.subject, task.message, function (err) {
                                     if (err) {
-                                        console.log(err);
-                                        return channel.nack(msg);
+                                        console.error(err);
+                                        return channel_1.nack(msg);
                                     }
                                     else {
-                                        channel.ack(msg);
+                                        return channel_1.ack(msg);
                                     }
                                 });
                             }
@@ -86,7 +87,12 @@ var start = function () { return __awaiter(void 0, void 0, void 0, function () {
                         return [2 /*return*/];
                     });
                 }); });
-                return [2 /*return*/];
+                return [3 /*break*/, 6];
+            case 5:
+                error_1 = _a.sent();
+                console.error(error_1);
+                return [3 /*break*/, 6];
+            case 6: return [2 /*return*/];
         }
     });
 }); };

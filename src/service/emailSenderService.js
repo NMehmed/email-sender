@@ -6,12 +6,12 @@ var apiKey = process.env.MAIL_GUN_API_KEY;
 var from = process.env.MAIL_FROM;
 var mg = mailgun({ apiKey: apiKey, domain: domain });
 var send = function (to, subject, text, cb) {
-    var data = {
+    var mail = {
         from: from,
         to: to,
         subject: subject,
         text: text
     };
-    mg.messages().send(data, cb);
+    mg.messages().send(mail, cb);
 };
 exports.default = { send: send };
